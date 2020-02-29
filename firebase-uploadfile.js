@@ -148,6 +148,9 @@ class FirebaseUploadfile extends LitElement {
       if (propName === 'dataUser' && this.dataUser !== null) {
         this.main();
       }
+      if (propName === 'value') {
+        this.fileIsImage = (this.value.search(/jpg|png|gif|tif|svg/) !== -1);
+      }
     });
   }
 
