@@ -169,11 +169,13 @@ class FirebaseUploadfile extends LitElement {
   }
 
   _userLogged(obj) {
-    this.user = obj.detail.user.displayName;
-    this.dataUser = obj.detail.user;
+    if (obj.detail.user) {
+      this.user = obj.detail.user.displayName;
+      this.dataUser = obj.detail.user;
+    }
   }
 
-  _userLogout(obj) {
+  _userLogout() {
     this.dataUser = null;
     this.data = null;
   }
