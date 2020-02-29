@@ -135,7 +135,7 @@ class FirebaseUploadfile extends LitElement {
       this.sIntId = setInterval(this._areYouSignin(), 1000);
     }
     const firebaseAreYouLoggedEvent = new Event('firebase-are-you-logged'); // (2)
-    this.dispatchEvent(firebaseAreYouLoggedEvent);
+    document.dispatchEvent(firebaseAreYouLoggedEvent);
   }
 
   disconnectedCallback() {
