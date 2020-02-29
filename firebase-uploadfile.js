@@ -54,6 +54,9 @@ class FirebaseUploadfile extends LitElement {
       },
       value: {
         type: String
+      },
+      fileIsImage: {
+        type: Boolean
       }
     };
   }
