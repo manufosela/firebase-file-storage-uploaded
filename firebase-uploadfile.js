@@ -237,9 +237,9 @@ class FirebaseUploadfile extends LitElement {
         },
         () => {
           task.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            this.value = downloadURL;
+            this.fileIsImage = (file && file.type.split('/')[0] === 'image');
             if (this.saveFileDatabase) {
-              this.value = downloadURL;
-              this.fileIsImage = (file && file.type.split('/')[0] === 'image');
               this.saveDownloadURL();
             }
             document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
