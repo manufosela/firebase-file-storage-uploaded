@@ -240,7 +240,7 @@ class FirebaseUploadfile extends LitElement {
               this.downloadURL = downloadURL;
               this.saveDownloadURL();
             }
-            document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL } }));
+            document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
           });
           msgLayer.style.display = 'flex';
           msgLayer.innerText = this.uploadOkMsg;
