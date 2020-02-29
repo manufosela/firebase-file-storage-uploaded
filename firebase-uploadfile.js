@@ -124,17 +124,11 @@ class FirebaseUploadfile extends LitElement {
     super.connectedCallback();
     document.addEventListener('firebase-signin', (ev) => {
       this._userLogged(ev);
-      this._stopIfAreYouSigin();
     });
     document.addEventListener('firebase-signout', (ev) => {
       this._userLogout(ev);
     });
-    if (!this.user || !this.data) {
-      // Si no hay usuario, pregunta si alguien está logado en firebase
-      this.log('Hubo retraso. Intentando detectar si se ha Logado');
-      this.sIntId = setInterval(this._areYouSignin(), 1000);
-    }
-    const firebaseAreYouLoggedEvent = new Event('firebase-are-you-logged'); // (2)
+    const firebaseAreYouLoggedEvent = new Event('firebase-are-you-logged');
     document.dispatchEvent(firebaseAreYouLoggedEvent);
   }
 
@@ -142,7 +136,6 @@ class FirebaseUploadfile extends LitElement {
     super.disconnectedCallback();
     document.removeEventListener('firebase-signin', (ev) => {
       this._userLogged(ev);
-      this._stopIfAreYouSigin();
     });
     document.removeEventListener('firebase-signout', (ev) => {
       this._userLogout(ev);
@@ -163,13 +156,8 @@ class FirebaseUploadfile extends LitElement {
     }
   }
 
-  _areYouSignin() {
-    document.dispatchEvent(new CustomEvent('firebase-are-you-signin'));
-    this.log('intento de busqueda si está logado');
-  }
-
   _userLogged(obj) {
-    if (obj.detail.user) {
+    if (!this.user && obj.detail.user) {
       this.user = obj.detail.user.displayName;
       this.dataUser = obj.detail.user;
     }
@@ -178,10 +166,6 @@ class FirebaseUploadfile extends LitElement {
   _userLogout() {
     this.dataUser = null;
     this.data = null;
-  }
-
-  _stopIfAreYouSigin() {
-    this.sIntId = null;
   }
 
   getFileName(file) {
