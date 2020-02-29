@@ -52,7 +52,7 @@ class FirebaseUploadfile extends LitElement {
       dataUser: {
         type: Object
       },
-      downloadURL: {
+      value: {
         type: String
       }
     };
@@ -117,7 +117,7 @@ class FirebaseUploadfile extends LitElement {
     this.loggedUser = '';
     this.dataUser = null;
     this.saveFileDatabase = false;
-    this.downloadURL = null;
+    this.value = '';
   }
 
   connectedCallback() {
@@ -211,7 +211,7 @@ class FirebaseUploadfile extends LitElement {
     const rootRef = firebase.database().ref();
     const storesRef = rootRef.child(path);
     const newStoreRef = storesRef.push();
-    newStoreRef.set(this.downloadURL);
+    newStoreRef.set(this.value);
   }
 
   main() {
@@ -237,7 +237,7 @@ class FirebaseUploadfile extends LitElement {
         () => {
           task.snapshot.ref.getDownloadURL().then((downloadURL) => {
             if (this.saveFileDatabase) {
-              this.downloadURL = downloadURL;
+              this.value = downloadURL;
               this.saveDownloadURL();
             }
             document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
@@ -261,7 +261,7 @@ class FirebaseUploadfile extends LitElement {
             <input type="file" value="upload" id="fileButton" />
           </div>
           <div class="bloque2">
-            ${(this.downloadURL !== null) ? html`<img src="${this.downloadURL}" alt="${name}" width="150">` : html``}
+            ${(this.value !== '') ? html`<img src="${this.value}" alt="${name}" width="150">` : html``}
           </div>
         </section>
         <div id="filelink"></div>
