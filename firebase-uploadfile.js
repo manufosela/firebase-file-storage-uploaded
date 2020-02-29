@@ -134,6 +134,18 @@ class FirebaseUploadfile extends LitElement {
       this.log('Hubo retraso. Intentando detectar si se ha Logado');
       this.sIntId = setInterval(this._areYouSignin(), 1000);
     }
+    this.dispatchEvent('firebase-are-you-logged');
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('firebase-signin', (ev) => {
+      this._userLogged(ev);
+      this._stopIfAreYouSigin();
+    });
+    document.removeEventListener('firebase-signout', (ev) => {
+      this._userLogout(ev);
+    });
   }
 
   updated(changedProperties) {
