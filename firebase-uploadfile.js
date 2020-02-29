@@ -52,6 +52,9 @@ class FirebaseUploadfile extends LitElement {
       dataUser: {
         type: Object
       },
+      downloadURL: {
+        type: String
+      }
     };
   }
 
@@ -64,7 +67,7 @@ class FirebaseUploadfile extends LitElement {
         max-width: 30vw;
         padding: 0;
         margin: 30px;
-        align-items: center;
+        align-items: start;
         justify-content: center;
         flex-direction: column;
       }
@@ -89,6 +92,16 @@ class FirebaseUploadfile extends LitElement {
         align-items: center;
         font-size: 1.2rem;
       }
+      label {
+        font-weight: bold;
+        margin: 5px 0;
+      }
+      .wrapper {
+        display:flex;
+      }
+      .bloque2 {
+        margin-left:20px;
+      }
     `;
   }
 
@@ -104,6 +117,7 @@ class FirebaseUploadfile extends LitElement {
     this.loggedUser = '';
     this.dataUser = null;
     this.saveFileDatabase = false;
+    this.downloadURL = null;
   }
 
   connectedCallback() {
@@ -191,14 +205,14 @@ class FirebaseUploadfile extends LitElement {
       }, 1500);
   }
 
-  saveFile(file) {
+  saveDownloadURL() {
     const hoy = new Date();
     const cleanuser = this._cleanString(this.user);
     const path = `${this.path}/${cleanuser}/${this.name}`;
     const rootRef = firebase.database().ref();
     const storesRef = rootRef.child(path);
     const newStoreRef = storesRef.push();
-    newStoreRef.set(file);
+    newStoreRef.set(this.downloadURL);
   }
 
   main() {
@@ -224,7 +238,8 @@ class FirebaseUploadfile extends LitElement {
         () => {
           task.snapshot.ref.getDownloadURL().then((downloadURL) => {
             if (this.saveFileDatabase) {
-              this.saveFile(downloadURL);
+              this.downloadURL = downloadURL;
+              this.saveDownloadURL();
             }
             document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL } }));
           });
@@ -237,10 +252,19 @@ class FirebaseUploadfile extends LitElement {
   }
 
   render() {
+    const name = this.name.split('/').pop();
     return html`
-      ${this.dataUser !== null ? html` 
-        <progress value="0" max="100" id="uploader">0%</progress>
-        <input type="file" value="upload" id="fileButton" />
+      ${this.dataUser !== null ? html`
+        <section class="wrapper">
+          <div class="bloque1">
+            <label>${name}</label>
+            <progress value="0" max="100" id="uploader">0%</progress>
+            <input type="file" value="upload" id="fileButton" />
+          </div>
+          <div class="bloque2">
+            ${(this.downloadURL !== null) ? html`<img src="${this.downloadURL}" alt="${name}" width="150">` : html``}
+          </div>
+        </section>
         <div id="filelink"></div>
         <div id="msg"></div>
       ` : html`<div class="waiting">Waiting for login...</div>`}
