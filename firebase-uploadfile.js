@@ -105,6 +105,64 @@ class FirebaseUploadfile extends LitElement {
       .bloque2 {
         margin-left:20px;
       }
+      .fakefile {
+        width:80px;
+        height: 80px;
+        border:2px solid black;
+      }
+      .fakefile > div::before {
+        transform: rotate(-45deg);
+        content: "FILE";
+      }
+      progress[value]::-webkit-progress-bar {
+        background-color: #eee;
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+      }
+      progress[value]::-webkit-progress-value {
+        background-image:
+          -webkit-linear-gradient(-45deg, 
+                                  transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                                  rgba(0,0, 0, .1) 66%, transparent 66%),
+          -webkit-linear-gradient(top, 
+                                  rgba(255, 255, 255, .25), 
+                                  rgba(0, 0, 0, .25)),
+          -webkit-linear-gradient(left, #09c, #f44);
+        border-radius: 2px; 
+        background-size: 35px 20px, 100% 100%, 100% 100%;
+        -webkit-animation: animate-stripes 5s linear infinite;
+        animation: animate-stripes 5s linear infinite;
+      }
+      progress[value]::-moz-progress-bar { 
+        background-image:
+          -moz-linear-gradient(
+            135deg, 
+            transparent 33%, 
+            rgba(0, 0, 0, 0.1) 33%, 
+            rgba(0, 0, 0, 0.1) 66%, 
+            transparent 66% 
+          ),
+          -moz-linear-gradient(
+            top, 
+            rgba(255, 255, 255, 0.25), 
+            rgba(0, 0, 0, 0.25)
+          ),
+          -moz-linear-gradient(
+            left, 
+            #09c, 
+            #f44
+          );
+        border-radius: 2px; 
+        background-size: 35px 20px, 100% 100%, 100% 100%;
+        animation: animate-stripes 5s linear infinite;
+      }
+      @-webkit-keyframes animate-stripes {
+        100% { background-position: -100px 0px; }
+      }
+
+      @keyframes animate-stripes {
+        100% { background-position: -100px 0px; }
+      }
     `;
   }
 
@@ -269,7 +327,8 @@ class FirebaseUploadfile extends LitElement {
             <input type="file" value="upload" id="fileButton" />
           </div>
           <div class="bloque2">
-            ${(this.value !== '' && this.fileIsImage) ? html`<img src="${this.value}" alt="${name}" width="150">` : html``}
+            ${(this.value !== '') ? (this.fileIsImage) ? html`<img src="${this.value}" alt="${name}" width="150">` : html`<div class='fakefile'><div></div></div>` : html``}
+            ${(this.value !== '') ? html`<a href='${this.value}' target="_blank">${this.value.split('/').pop().split('?')[0].split('-').pop()}</a>` : html``}
           </div>
         </section>
         <div id="filelink"></div>
