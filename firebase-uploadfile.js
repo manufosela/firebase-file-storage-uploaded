@@ -64,6 +64,9 @@ class FirebaseUploadfile extends LitElement {
   static get styles() {
     return css`
       /* CSS CUSTOM VARS
+        --progress-bg-color, #eee;
+        --progress-color1: #09c;
+        --progress-color2: #f44;
       */
       :host {
         display: flex;
@@ -115,19 +118,15 @@ class FirebaseUploadfile extends LitElement {
         content: "FILE";
       }
       progress[value]::-webkit-progress-bar {
-        background-color: #eee;
+        background-color: var(--progress-bg-color, #eee);
         border-radius: 2px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
       }
       progress[value]::-webkit-progress-value {
         background-image:
-          -webkit-linear-gradient(-45deg, 
-                                  transparent 33%, rgba(0, 0, 0, .1) 33%, 
-                                  rgba(0,0, 0, .1) 66%, transparent 66%),
-          -webkit-linear-gradient(top, 
-                                  rgba(255, 255, 255, .25), 
-                                  rgba(0, 0, 0, .25)),
-          -webkit-linear-gradient(left, #09c, #f44);
+          -webkit-linear-gradient(-45deg, transparent 33%, rgba(0, 0, 0, .1) 33%, rgba(0,0, 0, .1) 66%, transparent 66%),
+          -webkit-linear-gradient(top, rgba(255, 255, 255, .25), rgba(0, 0, 0, .25)), 
+          -webkit-linear-gradient(left, var(--progress-color1, #09c), var(--progress-color2, #f44));
         border-radius: 2px; 
         background-size: 35px 20px, 100% 100%, 100% 100%;
         -webkit-animation: animate-stripes 5s linear infinite;
@@ -135,23 +134,9 @@ class FirebaseUploadfile extends LitElement {
       }
       progress[value]::-moz-progress-bar { 
         background-image:
-          -moz-linear-gradient(
-            135deg, 
-            transparent 33%, 
-            rgba(0, 0, 0, 0.1) 33%, 
-            rgba(0, 0, 0, 0.1) 66%, 
-            transparent 66% 
-          ),
-          -moz-linear-gradient(
-            top, 
-            rgba(255, 255, 255, 0.25), 
-            rgba(0, 0, 0, 0.25)
-          ),
-          -moz-linear-gradient(
-            left, 
-            #09c, 
-            #f44
-          );
+          -moz-linear-gradient(135deg, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
+          -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25)),
+          -moz-linear-gradient(left, var(--progress-color1, #09c), var(--progress-color2, #f44));
         border-radius: 2px; 
         background-size: 35px 20px, 100% 100%, 100% 100%;
         animation: animate-stripes 5s linear infinite;
@@ -159,7 +144,6 @@ class FirebaseUploadfile extends LitElement {
       @-webkit-keyframes animate-stripes {
         100% { background-position: -100px 0px; }
       }
-
       @keyframes animate-stripes {
         100% { background-position: -100px 0px; }
       }
