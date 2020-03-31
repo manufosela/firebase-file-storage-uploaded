@@ -41,8 +41,11 @@
         <pre class="block attributes">
           <h3>Attributes</h3>
           <ul>
-            <li>property1 (String)</li>
-            <li>property2 (Number)</li>
+            <li>name (String)</li>
+            <li>path (String)</li>
+            <li>storage-name (String)</li>
+            <li>save-file-database (Boolean)</li>
+            <li>delete-btn (Boolean)</li>
           </ul>
         </pre>
       </div>
@@ -50,7 +53,7 @@
       <firebase-loginbutton api-key="AIzaSyCVpVjyqS9qNcTsTDuQ8qBL1i4VPy5CdpY" domain="coleccion-peliculas"
       messaging-sender-id="852819704247" app-id="1:852819704247:web:9ac0a093401920ed"></firebase-loginbutton>
 
-      <firebase-uploadfile name="caratula" path="/caratulas" storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME" save-file-database="true"></firebase-uploadfile>
+      <firebase-uploadfile name="caratula" path="/caratulas" storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME" save-file-database="true" delete-btn="true"></firebase-uploadfile>
       
       <h3>Creando elemento en diferido 5 segundos después...</h3>
       <div id="layer"></div>

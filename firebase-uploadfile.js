@@ -46,8 +46,12 @@ class FirebaseUploadfile extends LitElement {
         attribute: 'storage-name'
       },
       saveFileDatabase: {
-        type: String,
+        type: Boolean,
         attribute: 'save-file-database'
+      },
+      deleteBtn: {
+        type: Boolean,
+        attribute: 'delete-btn'
       },
       dataUser: {
         type: Object
@@ -104,6 +108,9 @@ class FirebaseUploadfile extends LitElement {
       }
       .wrapper {
         display:flex;
+      }
+      .bloque1 button {
+        margin:0 20px;
       }
       .bloque2 {
         margin-left:20px;
@@ -162,8 +169,12 @@ class FirebaseUploadfile extends LitElement {
     this.loggedUser = '';
     this.dataUser = null;
     this.saveFileDatabase = false;
+    this.deleteBtn = false;
     this.value = '';
     this.fileIsImage = false;
+
+    this._fileValueChange = this._fileValueChange.bind(this);
+    this._deleteValue = this._deleteValue.bind(this);
   }
 
   connectedCallback() {
@@ -263,41 +274,53 @@ class FirebaseUploadfile extends LitElement {
     newStoreRef.set(this.value);
   }
 
-  main() {
-    const uploader = this.shadowRoot.querySelector('#uploader');
-    const fileButton = this.shadowRoot.querySelector('#fileButton');
-    const msgLayer = this.shadowRoot.querySelector('#msg');
+  _deleteValue() {
+    this.value = '';
+    this.shadowRoot.querySelector('#fileButton').value = '';
+  }
 
-    fileButton.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      const fileName = this.getFileName(file);
-      const storageRef = firebase.storage().ref(this.path + '/' + fileName);
-      const task = storageRef.put(file);
-      task.on('state_changed',
-        (snapshot) => {
-          let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          uploader.value = percentage;
-        },
-        (err) => {
-          msgLayer.style.display = 'flex';
-          msgLayer.innerText = this.uploadErrorMsg;
-          this.closeMsg(msgLayer);
-        },
-        () => {
-          task.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            this.value = downloadURL;
-            this.fileIsImage = (file && file.type.split('/')[0] === 'image');
-            if (this.saveFileDatabase) {
-              this.saveDownloadURL();
-            }
-            document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
-          });
-          msgLayer.style.display = 'flex';
-          msgLayer.innerText = this.uploadOkMsg;
-          this.closeMsg(msgLayer);
-        }
-      );
-    });
+  _fileValueChange(e) {
+    const uploader = this.shadowRoot.querySelector('#uploader');
+    const msgLayer = this.shadowRoot.querySelector('#msg');
+    const file = e.target.files[0];
+    const fileName = this.getFileName(file);
+    const storageRef = firebase.storage().ref(this.path + '/' + fileName);
+    const task = storageRef.put(file);
+    task.on('state_changed',
+      (snapshot) => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        uploader.value = percentage;
+      },
+      (err) => {
+        msgLayer.style.display = 'flex';
+        msgLayer.innerText = this.uploadErrorMsg;
+        this.closeMsg(msgLayer);
+      },
+      () => {
+        task.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          this.value = downloadURL;
+          this.fileIsImage = (file && file.type.split('/')[0] === 'image');
+          if (this.saveFileDatabase) {
+            this.saveDownloadURL();
+          }
+          document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
+        });
+        msgLayer.style.display = 'flex';
+        msgLayer.innerText = this.uploadOkMsg;
+        this.closeMsg(msgLayer);
+      }
+    );
+  }
+
+
+  main() {
+    const fileButton = this.shadowRoot.querySelector('#fileButton');
+
+    if (this.deleteBtn) {
+      this.shadowRoot.querySelector('.bloque1 button').addEventListener('click', this._deleteValue);
+    }
+
+    fileButton.addEventListener('change', this._fileValueChange);
   }
 
   render() {
@@ -308,7 +331,10 @@ class FirebaseUploadfile extends LitElement {
           <div class="bloque1">
             <label>${name}</label>
             <progress value="0" max="100" id="uploader">0%</progress>
-            <input type="file" value="upload" id="fileButton" />
+            <div style="display:flex">
+              <input type="file" value="upload" id="fileButton">
+              ${(this.deleteBtn) ? html`<button>Delete</button>` : html``}
+            </div>
           </div>
           <div class="bloque2">
             ${(this.value !== '') ? (this.fileIsImage) ? html`<img src="${this.value}" alt="${name}" width="150">` : html`<div class='fakefile'><div></div></div>` : html``}
