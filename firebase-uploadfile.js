@@ -71,12 +71,14 @@ class FirebaseUploadfile extends LitElement {
         --progress-bg-color, #eee;
         --progress-color1: #09c;
         --progress-color2: #f44;
+        --progress-width: 500px
+        --bgcolor-button: #106BA0;
+        --color-button: #FFF;
       */
       :host {
         display: flex;
-        max-width: 30vw;
         padding: 0;
-        margin: 30px;
+        margin: 30px 0;
         align-items: start;
         justify-content: center;
         flex-direction: column;
@@ -109,11 +111,14 @@ class FirebaseUploadfile extends LitElement {
       .wrapper {
         display:flex;
       }
-      .bloque1 button {
-        margin:0 20px;
+      .bloque1 {
+        width: var(--progress-width, 500px);
       }
       .bloque2 {
         margin-left:20px;
+      }
+      .bloque2 a {
+        display: block;
       }
       .fakefile {
         width:80px;
@@ -123,6 +128,9 @@ class FirebaseUploadfile extends LitElement {
       .fakefile > div::before {
         transform: rotate(-45deg);
         content: "FILE";
+      }
+      .invisible {
+        visibility: hidden;
       }
       progress[value]::-webkit-progress-bar {
         background-color: var(--progress-bg-color, #eee);
@@ -147,6 +155,36 @@ class FirebaseUploadfile extends LitElement {
         border-radius: 2px; 
         background-size: 35px 20px, 100% 100%, 100% 100%;
         animation: animate-stripes 5s linear infinite;
+      }
+      input[type="file"] {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+      }
+      label[for="fileButton"] {
+        padding: 0.5rem;
+      }
+      label[for="fileButton"], button {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-button, #FFF);
+        background-color: var(--bgcolor-button, #106BA0);
+        display: inline-block;
+        transition: all .5s;
+        cursor: pointer;
+        text-transform: uppercase;
+        width: fit-content;
+        text-align: center;
+        border: 2px outset var(--bgcolor-button, #106BA0);
+        border-radius: 10px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+      .bloque1 button {
+        margin:0.3rem;
+        padding: 0.5rem;
       }
       @-webkit-keyframes animate-stripes {
         100% { background-position: -100px 0px; }
@@ -286,6 +324,7 @@ class FirebaseUploadfile extends LitElement {
     const fileName = this.getFileName(file);
     const storageRef = firebase.storage().ref(this.path + '/' + fileName);
     const task = storageRef.put(file);
+    this.shadowRoot.querySelector('progress').classList.remove('invisible');
     task.on('state_changed',
       (snapshot) => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -303,6 +342,7 @@ class FirebaseUploadfile extends LitElement {
           if (this.saveFileDatabase) {
             this.saveDownloadURL();
           }
+          this.shadowRoot.querySelector('progress').classList.add('invisible');
           document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name } }));
         });
         msgLayer.style.display = 'flex';
@@ -330,9 +370,11 @@ class FirebaseUploadfile extends LitElement {
         <section class="wrapper">
           <div class="bloque1">
             <label>${name}</label>
-            <progress value="0" max="100" id="uploader">0%</progress>
+            <progress value="0" max="100" id="uploader" class="invisible">0%</progress>
             <div style="display:flex">
+              <label for="fileButton">Selecciona un fichero
               <input type="file" value="upload" id="fileButton">
+              </label>
               ${(this.deleteBtn) ? html`<button>Delete</button>` : html``}
             </div>
           </div>
