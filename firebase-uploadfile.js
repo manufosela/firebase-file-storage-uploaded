@@ -74,6 +74,7 @@ class FirebaseUploadfile extends LitElement {
         --progress-width: 500px
         --bgcolor-button: #106BA0;
         --color-button: #FFF;
+        --progress-width: 500px
       */
       :host {
         display: flex;
