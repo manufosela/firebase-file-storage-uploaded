@@ -49,6 +49,7 @@
           <ul>
             <li>name (String)</li>
             <li>path (String)</li>
+            <li>value (String)</li>
             <li>storage-name (String)</li>
             <li>save-file-database (Boolean)</li>
             <li>delete-btn (Boolean)</li>
@@ -59,7 +60,15 @@
       <firebase-loginbutton api-key="AIzaSyCVpVjyqS9qNcTsTDuQ8qBL1i4VPy5CdpY" domain="coleccion-peliculas"
       messaging-sender-id="852819704247" app-id="1:852819704247:web:9ac0a093401920ed"></firebase-loginbutton>
 
-      <firebase-uploadfile id="progressbar1" name="caratula" path="/caratulas" storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME" save-file-database="true" delete-btn="true"></firebase-uploadfile>
+      <firebase-uploadfile 
+        id="progressbar1" 
+        value="https://firebasestorage.googleapis.com/v0/b/coleccion-peliculas.appspot.com/o/caratulas%2F9_14_12-17_3_2020-M%C3%A1nu_Fosela-_caratulas-caratula-paraguas.png?alt=media&token=bad39e06-94a0-4a9d-8541-d63234bde502"
+        name="caratula" 
+        path="/caratulas" 
+        storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME" 
+        save-file-database="true" 
+        delete-btn="true">
+      </firebase-uploadfile>
       
       <h3>Creando elemento en diferido 5 segundos después...</h3>
       <div id="layer"></div>

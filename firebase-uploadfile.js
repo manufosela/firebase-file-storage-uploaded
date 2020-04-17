@@ -346,7 +346,9 @@ class FirebaseUploadfile extends LitElement {
           }
           const id = this.id || 'id-not-defined';
           this.shadowRoot.querySelector('progress').classList.add('invisible');
-          this.shadowRoot.querySelector('.bloque1 button').classList.remove('invisible');
+          if (this.deleteBtn) {
+            this.shadowRoot.querySelector('.bloque1 button').classList.remove('invisible');
+          }
           document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name, id: id } }));
         });
         msgLayer.style.display = 'flex';
@@ -379,7 +381,7 @@ class FirebaseUploadfile extends LitElement {
               <label for="fileButton">Selecciona un fichero
               <input type="file" value="upload" id="fileButton">
               </label>
-              ${(this.deleteBtn) ? html`<button class="invisible">Delete</button>` : html``}
+              ${(this.deleteBtn) ? (this.value !== '') ? html`<button>Delete</button>`: html`<button class="invisible">Delete</button>` : html``}
             </div>
           </div>
           <div class="bloque2">
