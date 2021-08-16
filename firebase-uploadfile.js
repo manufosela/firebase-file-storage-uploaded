@@ -1,10 +1,7 @@
-import {
-  LitElement,
-  html,
-  css
-} from 'lit-element';
-import 'firebase/firebase-storage';
-import 'firebase/firebase-database';
+import { LitElement, html, css } from 'lit-element';
+
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getDatabase } from 'firebase/database';
 
 /**
  * `firebase-uploadfile`
@@ -226,6 +223,8 @@ class FirebaseUploadfile extends LitElement {
     });
     const firebaseAreYouLoggedEvent = new Event('firebase-are-you-logged');
     document.dispatchEvent(firebaseAreYouLoggedEvent);
+
+    console.log(this.path);
   }
 
   disconnectedCallback() {
@@ -259,6 +258,9 @@ class FirebaseUploadfile extends LitElement {
     if (!this.user && obj.detail.user) {
       this.user = obj.detail.user.displayName;
       this.dataUser = obj.detail.user;
+      this.app = obj.detail.firebaseApp;
+      const slash = ( this.path.substr(-1) !== '/' ) ? '/' :'';
+      this.path = `${this.path}${slash}${this.user.replace(/\s+/g, '_')}`;
     }
   }
 
@@ -271,7 +273,7 @@ class FirebaseUploadfile extends LitElement {
     const hoy = new Date();
     const hora = `${hoy.getHours()}_${hoy.getMinutes()}_${hoy.getSeconds()}`;
     const fecha = `${hoy.getDate()}_${hoy.getMonth()}_${hoy.getFullYear()}`;
-    const fileNameData = { 'FILENAME': file.name, 'PATH': this.path.replace(/\//g, '_'), 'USER': this.user.replace(/\s/g, '_'), 'DATE': fecha, 'HOUR': hora, 'NAME': this.name };
+    const fileNameData = { 'FILENAME': file.name, 'USER': this.user.replace(/\s/g, '_'), 'DATE': fecha, 'HOUR': hora, 'NAME': this.name };
     const nameParts = this.storageName.split(',');
     let fileNameParts = [];
     nameParts.forEach((part) => {
@@ -319,13 +321,8 @@ class FirebaseUploadfile extends LitElement {
     this.shadowRoot.querySelector('#fileButton').value = '';
   }
 
-  _fileValueChange(e) {
-    const uploader = this.shadowRoot.querySelector('#uploader');
-    const msgLayer = this.shadowRoot.querySelector('#msg');
-    const file = e.target.files[0];
-    const fileName = this.getFileName(file);
-    const storageRef = firebase.storage().ref(this.path + '/' + fileName);
-    const task = storageRef.put(file);
+  // Firebase 8: para ver el progreso de la carga de archivos
+  _progressBar(task) {
     this.shadowRoot.querySelector('progress').classList.remove('invisible');
     task.on('state_changed',
       (snapshot) => {
@@ -351,13 +348,34 @@ class FirebaseUploadfile extends LitElement {
           }
           document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: downloadURL, name: this.name, id: id } }));
         });
-        msgLayer.style.display = 'flex';
-        msgLayer.innerText = this.uploadOkMsg;
-        this.closeMsg(msgLayer);
+        this._showMessage(this.uploadOkMsg)
       }
     );
   }
 
+  _showMessage(message) {
+    const msgLayer = this.shadowRoot.querySelector('#msg');
+    msgLayer.style.display = 'flex';
+    msgLayer.innerText = message;
+    this.closeMsg(msgLayer);
+  }
+
+  async _fileValueChange(e) {
+    const uploader = this.shadowRoot.querySelector('#uploader');
+    const msgLayer = this.shadowRoot.querySelector('#msg');
+    const file = e.target.files[0];
+    const fileName = this.getFileName(file);
+    try {
+      const storage = await getStorage(this.app)
+      const storageRef = ref(storage, this.path + '/' + fileName);
+      const uploadResult = await uploadBytes(storageRef, file); 
+      //TODO: Investigar como obtener el progreso con firebase 9: const uploadTask = uploadBytesResumable(storageRef, file); 
+      // this._progressBar(uploadTask);
+      this._showMessage('File uploaded sucessusfully');
+    } catch(err) {
+      console.error(err);
+    }
+  }
 
   main() {
     const fileButton = this.shadowRoot.querySelector('#fileButton');
