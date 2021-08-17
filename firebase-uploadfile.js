@@ -184,6 +184,31 @@ class FirebaseUploadfile extends LitElement {
         margin:0.3rem;
         padding: 0.5rem;
       }
+      .lds-dual-ring {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 6px solid #fff;
+        border-color: #fff transparent #fff transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+      }
+      @keyframes lds-dual-ring {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
       @-webkit-keyframes animate-stripes {
         100% { background-position: -100px 0px; }
       }
@@ -235,6 +260,10 @@ class FirebaseUploadfile extends LitElement {
     document.removeEventListener('firebase-signout', (ev) => {
       this._userLogout(ev);
     });
+  }
+
+  firstUpdated() {
+    this.sdomMsgLayer = this.shadowRoot.querySelector('#msg');
   }
 
   updated(changedProperties) {
@@ -353,6 +382,11 @@ class FirebaseUploadfile extends LitElement {
     );
   }
 
+  _showLoading() {
+    this.sdomMsgLayer.style.display = 'flex';
+    this.sdomMsgLayer.innerHTML = '<div class="lds-dual-ring"></div>';
+  }
+
   _showMessage(message) {
     const msgLayer = this.shadowRoot.querySelector('#msg');
     msgLayer.style.display = 'flex';
@@ -366,7 +400,8 @@ class FirebaseUploadfile extends LitElement {
     const file = e.target.files[0];
     const fileName = this.getFileName(file);
     try {
-      const storage = await getStorage(this.app)
+      this._showLoading();
+      const storage = await getStorage(this.app);
       const storageRef = ref(storage, this.path + '/' + fileName);
       const uploadResult = await uploadBytes(storageRef, file); 
       //TODO: Investigar como obtener el progreso con firebase 9: const uploadTask = uploadBytesResumable(storageRef, file); 
