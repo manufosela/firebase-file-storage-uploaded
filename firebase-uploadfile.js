@@ -246,8 +246,10 @@ class FirebaseUploadfile extends LitElement {
     document.addEventListener('firebase-signout', (ev) => {
       this._userLogout(ev);
     });
-    const firebaseAreYouLoggedEvent = new Event('firebase-are-you-logged');
+    const firebaseAreYouLoggedEvent = new Event('are-it-logged-into-firebase');
     document.dispatchEvent(firebaseAreYouLoggedEvent);
+    const firebaseAreYouLoggedEvent2 = new Event('firebase-are-you-logged');
+    document.dispatchEvent(firebaseAreYouLoggedEvent2);
 
     console.log(this.path);
   }

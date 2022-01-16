@@ -1,14 +1,15 @@
 {
   "name": "firebase-uploadfile",
   "description": "Lit-Element webcomponent firebase-uploadfile",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "firebase-uploadfile.js",
+  "module": "firebase-uploadfile.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/manufosela/firebase-uploadfile"
   },
   "author": "manufosela",
-  "license": "Apache 2.0",
+  "license": "MIT",
   "keywords": [
     "webcomponent",
     "lit-element"
@@ -18,7 +19,7 @@
   },
   "homepage": "https://github.com/manufosela/firebase-uploadfile",
   "dependencies": {
-    "firebase": "^9.0.0-beta.6",
+    "firebase": "^9.6.3",
     "lit-element": "^2.1.0"
   },
   "devDependencies": {
