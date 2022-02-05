@@ -1,7 +1,7 @@
 {
   "name": "firebase-uploadfile",
   "description": "Lit-Element webcomponent firebase-uploadfile",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "main": "firebase-uploadfile.js",
   "module": "firebase-uploadfile.js",
   "repository": {
