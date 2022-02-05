@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit-element';
-
+/* eslint-disable no-param-reassign */
+import { LitElement, html } from 'lit-element';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { getDatabase } from 'firebase/database';
+import { firebaseUploadfileStyles } from './firebase-uploadfile-styles.js';
 
 /**
  * `firebase-uploadfile`
@@ -42,10 +42,6 @@ export class FirebaseUploadfile extends LitElement {
         type: String,
         attribute: 'storage-name'
       },
-      saveFileDatabase: {
-        type: Boolean,
-        attribute: 'save-file-database'
-      },
       deleteBtn: {
         type: Boolean,
         attribute: 'delete-btn'
@@ -68,192 +64,7 @@ export class FirebaseUploadfile extends LitElement {
   }
 
   static get styles() {
-    return css`
-      /* CSS CUSTOM VARS
-        --firebase-uploadfile-width-image: 150px;
-        --firebase-uploadfile-zoom-image: 1.2;
-        --firebase-uploadfile-progress-bg-color, #eee;
-        --firebase-uploadfile-progress-color1: #09c;
-        --firebase-uploadfile-progress-color2: #f44;
-        --firebase-uploadfile-progress-width: 500px;
-        --firebase-uploadfile-bgcolor-button: #106BA0;
-        --firebase-uploadfile-color-button: #FFF;
-        --firebase-uploadfile-progress-width: 500px
-      */
-      :host {
-        display: flex;
-        padding: 0;
-        margin: 30px 0;
-        align-items: start;
-        justify-content: center;
-        flex-direction: column;
-
-        --firebase-uploadfile-width-image: 150px;
-        --firebase-uploadfile-zoom-image: 1.2;
-        --firebase-uploadfile-progress-bg-color: #eee;
-        --firebase-uploadfile-progress-color1: #09c;
-        --firebase-uploadfile-progress-color2: #f44;
-        --firebase-uploadfile-progress-width: 500px;
-        --firebase-uploadfile-bgcolor-button: #106BA0;
-        --firebase-uploadfile-color-button: #FFF;
-        --firebase-uploadfile-progress-width: 500px
-      }
-
-      #uploader {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        margin-bottom: 10px;
-      }
-      #msg {
-        border: 3px outset gray;
-        border-radius: 15px;
-        width: 300px;
-        height: 100px;
-        position: absolute;
-        background: gray;
-        display:none;
-        color: #FFF;
-        font-weight: bold;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.2rem;
-      }
-      label {
-        font-weight: bold;
-        margin: 5px 0;
-      }
-      .wrapper {
-        display:flex;
-      }
-      .bloque1 {
-        width: var(--firebase-uploadfile-progress-width, 500px);
-      }
-      .bloque2 {
-        margin-left:20px;
-      }
-      .bloque2 a {
-        display: block;
-      }
-      .fakefile {
-        width:80px;
-        height: 80px;
-        border:2px solid black;
-      }
-      .fakefile > div::before {
-        transform: rotate(-45deg);
-        content: "FILE";
-      }
-      .invisible {
-        visibility: hidden;
-      }
-      progress[value]::-webkit-progress-bar {
-        background-color: var(--firebase-uploadfile-progress-bg-color, #eee);
-        border-radius: 2px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-      }
-      progress[value]::-webkit-progress-value {
-        background-image:
-          -webkit-linear-gradient(-45deg, transparent 33%, rgba(0, 0, 0, .1) 33%, rgba(0,0, 0, .1) 66%, transparent 66%),
-          -webkit-linear-gradient(top, rgba(255, 255, 255, .25), rgba(0, 0, 0, .25)), 
-          -webkit-linear-gradient(left, var(--firebase-uploadfile-progress-color1, #09c), var(--firebase-uploadfile-progress-color2, #f44));
-        border-radius: 2px; 
-        background-size: 35px 20px, 100% 100%, 100% 100%;
-        -webkit-animation: animate-stripes 5s linear infinite;
-        animation: animate-stripes 5s linear infinite;
-      }
-      progress[value]::-moz-progress-bar { 
-        background-image:
-          -moz-linear-gradient(135deg, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
-          -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25)),
-          -moz-linear-gradient(left, var(--firebase-uploadfile-progress-color1, #09c), var(--firebase-uploadfile-progress-color2, #f44));
-        border-radius: 2px; 
-        background-size: 35px 20px, 100% 100%, 100% 100%;
-        animation: animate-stripes 5s linear infinite;
-      }
-      input[type="file"] {
-        width: 0.1px;
-        height: 0.1px;
-        opacity: 0;
-        overflow: hidden;
-        position: absolute;
-        z-index: -1;
-      }
-      label[for="fileButton"] {
-        padding: 0.5rem;
-      }
-      label[for="fileButton"], button {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--firebase-uploadfile-color-button, #FFF);
-        background-color: var(--firebase-uploadfile-bgcolor-button, #106BA0);
-        display: inline-block;
-        transition: all .5s;
-        cursor: pointer;
-        text-transform: uppercase;
-        width: fit-content;
-        text-align: center;
-        border: 2px outset var(--firebase-uploadfile-bgcolor-button, #106BA0);
-        border-radius: 10px;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-      }
-      .bloque1 button {
-        margin:0.3rem;
-        padding: 0.5rem;
-      }
-      #imageLoaded {
-        width:var(--firebase-uploadfile-width-image, 150px);
-        transition: transform 1s;
-        object-fit: cover;
-        position:fixed;
-      }
-
-      #imageLoaded:hover {
-        width:300px;
-        transform: scale(var(--firebase-uploadfile-zoom-image, 1.2));
-      }
-
-      .lds-dual-ring {
-        display: inline-block;
-        width: 80px;
-        height: 80px;
-      }
-      .lds-dual-ring:after {
-        content: " ";
-        display: block;
-        width: 64px;
-        height: 64px;
-        margin: 8px;
-        border-radius: 50%;
-        border: 6px solid #fff;
-        border-color: #fff transparent #fff transparent;
-        animation: lds-dual-ring 1.2s linear infinite;
-      }
-      @keyframes lds-dual-ring {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @-webkit-keyframes animate-stripes {
-        100% { background-position: -100px 0px; }
-      }
-      @keyframes animate-stripes {
-        100% { background-position: -100px 0px; }
-      }
-
-      @keyframes bigScale {
-        0% {
-          transform: scale(1);
-        }
-        100% {
-          transform: scale(2);
-        }
-      }
-    `;
+    return [firebaseUploadfileStyles];
   }
 
   constructor() {
@@ -268,7 +79,6 @@ export class FirebaseUploadfile extends LitElement {
     this.bLog = false;
     this.loggedUser = '';
     this.dataUser = null;
-    this.saveFileDatabase = false;
     this.deleteBtn = false;
     this.value = '';
     this.fileIsImage = false;
@@ -354,20 +164,6 @@ export class FirebaseUploadfile extends LitElement {
     return fileNameParts.join('-');
   }
 
-  _cleanString(str) {
-    this._null = null;
-    const cleanedStr= str.toLowerCase()
-      .replace(/\s/g, '_')
-      .replace(/[àáä]/g, 'a')
-      .replace(/[èéë]/g, 'e')
-      .replace(/[ìíï]/g, 'i')
-      .replace(/òóö/g, 'o')
-      .replace(/[ùúü]/g, 'u')
-      .replace(/[ñÑ]/g, 'n')
-      .replace(/[\[\]\.]/g, '');
-    return cleanedStr;
-  }
-
   closeMsg(layer) {
     setTimeout(
       () => {
@@ -375,16 +171,6 @@ export class FirebaseUploadfile extends LitElement {
         layer.innerText = '';
         this.shadowRoot.querySelector('#uploader').value = 0;
       }, 1500);
-  }
-
-  saveDownloadURL() {
-    const hoy = new Date();
-    const cleanuser = this._cleanString(this.user);
-    const path = `${this.path}/${cleanuser}/${this.name}`;
-    const rootRef = firebase.database().ref();
-    const storesRef = rootRef.child(path);
-    const newStoreRef = storesRef.push();
-    newStoreRef.set(this.value);
   }
 
   _deleteValue() {
@@ -403,18 +189,13 @@ export class FirebaseUploadfile extends LitElement {
         uploader.value = percentage;
       },
       (err) => {
-        msgLayer.style.display = 'flex';
-        msgLayer.innerText = this.uploadErrorMsg;
-        this.closeMsg(msgLayer);
+        this._showMessage(err);
       },
       () => {
         getDownloadURL(task.snapshot.ref)
           .then((downloadURL) => {          
           this.value = downloadURL;
           this.fileIsImage = (file && file.type.split('/')[0] === 'image');
-          if (this.saveFileDatabase) {
-            this.saveDownloadURL();
-          }
           this.shadowRoot.querySelector('progress').classList.add('invisible');
           if (this.deleteBtn) {
             this.shadowRoot.querySelector('.bloque1 button').classList.remove('invisible');
@@ -440,21 +221,21 @@ export class FirebaseUploadfile extends LitElement {
     this.closeMsg(msgLayer);
   }
 
-  async _fileValueChange(e) {
-    const uploader = this.shadowRoot.querySelector('#uploader');
-    const msgLayer = this.shadowRoot.querySelector('#msg');
-    const file = e.target.files[0];
-    const fileName = this.getFileName(file);
+  async _saveFile(file, fileName) {
     try {
-      // this._showLoading();
       const storage = await getStorage(this.app);
       const storageRef = ref(storage, `${this.path  }/${  fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, file); 
       this._progressBar(uploadTask, file);
-      // this._showMessage('File uploaded sucessusfully');
     } catch(err) {
-      console.error(err);
+      this._showMessage(err);
     }
+  }
+
+  async _fileValueChange(e) {
+    const file = e.target.files[0];
+    const fileName = this.getFileName(file);
+    await this._saveFile(file, fileName);
   }
 
   main() {
