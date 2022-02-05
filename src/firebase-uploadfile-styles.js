@@ -139,7 +139,6 @@ export const firebaseUploadfileStyles = css`
     width:var(--firebase-uploadfile-width-image, 150px);
     transition: transform 1s;
     object-fit: cover;
-    position:fixed;
   }
 
   #imageLoaded:hover {
