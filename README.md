@@ -1,59 +1,87 @@
-# firebase-uploadfile
+# \<firebase-uploadfile>
 
-Lit-Element web component description
+This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
 
-## Demo
+## Installation
 
+```bash
+npm i firebase-uploadfile
 ```
-<h2>Basic firebase-uploadfile Demo</h2>
-<h3>Demo</h3>
-<firebase-uploadfile></firebase-uploadfile>
 
-```
-<!---
-```
-<custom-element-demo>
-  <template>
-    <link rel="import" href="firebase-uploadfile.html">
-    <next-code-block></next-code-block>
-  </template>
-</custom-element-demo>
-```
--->
+## Usage
+
 ```html
+<script type="module">
+  import 'firebase-uploadfile/firebase-uploadfile.js';
+</script>
+
 <firebase-uploadfile></firebase-uploadfile>
-
-```
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
-
-```
-$ polymer serve
 ```
 
-## Running Tests
+## Styling
 
+- **--firebase-uploadfile-width-image**, default value 150px;
+- **--firebase-uploadfile-zoom-image**, default value 1.2;
+- **--firebase-uploadfile-progress-bg**, default valuecolor, #eee;
+- **--firebase-uploadfile-progress-color1**, default value #09c;
+- **--firebase-uploadfile-progress-color2**, default value #f44;
+- **--firebase-uploadfile-progress-width**, default value 500px;
+- **--firebase-uploadfile-bgcolor-button**, default value #106BA0;
+- **--firebase-uploadfile-color-button**, default value #FFF;
+- **--firebase-uploadfile-progress-width**, default value 500px
+
+## Linting and formatting
+
+To scan the project for linting and formatting errors, run
+
+```bash
+npm run lint
 ```
-$ polymer test
+
+To automatically fix linting and formatting errors, run
+
+```bash
+npm run format
 ```
 
-## Build
+## Testing with Web Test Runner
+
+To execute a single test run:
+
+```bash
+npm run test
 ```
-$ npm run build
+
+To run the tests in interactive watch mode run:
+
+```bash
+npm run test:watch
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+## Demoing with Storybook
 
-##Author
-@manufosela
+To run a local instance of Storybook for your component, run
 
-## License
+```bash
+npm run storybook
+```
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details
+To build a production version of Storybook, run
 
-## Generated
+```bash
+npm run storybook:build
+```
 
-**generator-lit-element-base** - *yeoman npm package* - by [@manufosela](https://github.com/manufosela/generator-litelement-webcomponent)
+## Tooling configs
+
+For most of the tools, the configuration is in the `package.json` to minimize the amount of files in your project.
+
+If you customize the configuration a lot, you can consider moving them to individual files.
+
+## Local Demo with `web-dev-server`
+
+```bash
+npm start
+```
+
+To run a local development server that serves the basic demo located in `demo/index.html`

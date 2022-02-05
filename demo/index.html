@@ -1,81 +1,44 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-GB">
   <head>
-    <title>firebase-uploadfile demo</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <script type="module" src="/node_modules/firebase-loginbutton/firebase-loginbutton.js"></script>
-    <script type="module" src="../firebase-uploadfile.js"></script>
+    <meta charset="utf-8" />
     <style>
-      .blocks {
-        display:flex;
-        display-direction:row;
-        flex-wrap: wrap;
-      }
-      .block {
-        display:flex;
-        display-direction:column;
-        flex-wrap: wrap;
-        white-space: normal;
-      }
-      .code {
-        padding: 20px;
-        color:#FFF; 
-        background: #000;
-      }
-      .attributes {
-        padding-left: 20px;
-      }
-
-      #progressbar1 {
-        --progress-width: 400px;
-        --bgcolor-button: rgb(136, 16, 160);
-        --color-button: rgb(255, 208, 0);
+      body {
+        background: #fafafa;
       }
     </style>
+    <script type="module" src="../firebase-uploadfile.js"></script>
   </head>
 
   <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic firebase-uploadfile Demo</h3>
-      <div class="blocks">
-        <pre class="block code">
-          <code>
-            &lt;firebase-uploadfile&gt;&lt;/firebase-uploadfile&gt;
-          </code>
-        </pre>
-        <pre class="block attributes">
-          <h3>Attributes</h3>
-          <ul>
-            <li>name (String)</li>
-            <li>path (String)</li>
-            <li>value (String)</li>
-            <li>storage-name (String)</li>
-            <li>save-file-database (Boolean)</li>
-            <li>delete-btn (Boolean)</li>
-          </ul>
-        </pre>
-      </div>
+    <div id="demo">
+      <firebase-loginbutton
+        api-key="AIzaSyCVpVjyqS9qNcTsTDuQ8qBL1i4VPy5CdpY"
+        domain="coleccion-peliculas"
+        messaging-sender-id="852819704247"
+        app-id="1:852819704247:web:9ac0a093401920ed"
+      ></firebase-loginbutton>
 
-      <firebase-loginbutton api-key="AIzaSyCVpVjyqS9qNcTsTDuQ8qBL1i4VPy5CdpY" domain="coleccion-peliculas"
-      messaging-sender-id="852819704247" app-id="1:852819704247:web:9ac0a093401920ed"></firebase-loginbutton>
-
-      <firebase-uploadfile 
-        id="progressbar1" 
+      <firebase-uploadfile
+        id="progressbar1"
+        login-btn-id="firebase-loginbutton"
         value="https://firebasestorage.googleapis.com/v0/b/coleccion-peliculas.appspot.com/o/prueba%2FManuel_Fosela%2F20_13_2-17_7_2021-paraguas.png?alt=media&token=e4b83b0d-ab5c-4b23-ab79-e8b142c7467b"
-        name="caratula" 
-        path="/caratulas" 
-        storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME" 
-        save-file-database="true" 
-        delete-btn="true">
+        name="caratula"
+        path="/caratulas"
+        storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME"
+        save-file-database="true"
+        delete-btn="true"
+      >
       </firebase-uploadfile>
-      
+
       <h3>Creando elemento en diferido 5 segundos después...</h3>
       <div id="layer"></div>
       <script>
-        setTimeout(function(){
-          document.querySelector('#layer').innerHTML = '<firebase-uploadfile id="upload2" name="DeferedElement" path="/prueba" storage-name="HOUR,DATE,FILENAME"></firebase-uploadfile>';
-        }, 5000);
+        function createWc() {
+          document.querySelector('#layer').innerHTML =
+            '<firebase-uploadfile id="upload2" login-btn-id="firebase-loginbutton" name="DeferedElement" delete-btn="true" path="/prueba" storage-name="HOUR,DATE,FILENAME"></firebase-uploadfile>';
+        }
+        setTimeout(createWc, 5000);
       </script>
     </div>
   </body>
