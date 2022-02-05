@@ -13,7 +13,7 @@ import { getDatabase } from 'firebase/database';
  * @demo demo/index.html
  */
 
-class FirebaseUploadfile extends LitElement {
+export class FirebaseUploadfile extends LitElement {
   static get is() {
     return 'firebase-uploadfile';
   }
@@ -355,6 +355,7 @@ class FirebaseUploadfile extends LitElement {
   }
 
   _cleanString(str) {
+    this._null = null;
     const cleanedStr= str.toLowerCase()
       .replace(/\s/g, '_')
       .replace(/[àáä]/g, 'a')
@@ -492,5 +493,3 @@ class FirebaseUploadfile extends LitElement {
     `;
   }
 }
-
-window.customElements.define(FirebaseUploadfile.is, FirebaseUploadfile);
