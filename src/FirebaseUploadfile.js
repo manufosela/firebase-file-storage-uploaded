@@ -85,6 +85,8 @@ export class FirebaseUploadfile extends LitElement {
 
     this._fileValueChange = this._fileValueChange.bind(this);
     this._deleteValue = this._deleteValue.bind(this);
+
+
   }
 
   connectedCallback() {
@@ -146,6 +148,7 @@ export class FirebaseUploadfile extends LitElement {
   }
 
   _userLogout() {
+    this.user = null;
     this.dataUser = null;
     this.data = null;
   }
