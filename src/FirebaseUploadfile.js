@@ -97,9 +97,9 @@ export class FirebaseUploadfile extends LitElement {
     document.addEventListener('firebase-signout', (ev) => {
       this._userLogout(ev);
     });
-    const firebaseAreYouLoggedEvent = new Event('are-it-logged-into-firebase', { detail: { id: this.loginBtnId }});
+    const firebaseAreYouLoggedEvent = new CustomEvent('are-it-logged-into-firebase', { detail: { id: this.loginBtnId }});
     document.dispatchEvent(firebaseAreYouLoggedEvent);
-    const firebaseAreYouLoggedEvent2 = new Event('firebase-are-you-logged', { detail: { id: this.loginBtnId }});
+    const firebaseAreYouLoggedEvent2 = new CustomEvent('firebase-are-you-logged', { detail: { id: this.loginBtnId }});
     document.dispatchEvent(firebaseAreYouLoggedEvent2);
 
     this.id = this.id || `firebase-uploadfile-${  Math.random().toString(36).substring(2, 15)}`;
