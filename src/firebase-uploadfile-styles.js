@@ -61,12 +61,15 @@ export const firebaseUploadfileStyles = css`
   }
   .wrapper {
     display:flex;
+    align-items: center;
   }
   .bloque1 {
     width: var(--firebase-uploadfile-progress-width, 500px);
   }
   .bloque2 {
     margin-left:20px;
+    position: absolute;
+    right: 1rem;
   }
   .bloque2 a {
     display: block;
@@ -82,6 +85,7 @@ export const firebaseUploadfileStyles = css`
   }
   .invisible {
     visibility: hidden;
+    width:0;
   }
   progress[value]::-webkit-progress-bar {
     background-color: var(--firebase-uploadfile-progress-bg-color, #eee);

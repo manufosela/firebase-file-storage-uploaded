@@ -90,7 +90,7 @@ export class FirebaseUploadfile extends LitElement {
 
     this._fileValueChange = this._fileValueChange.bind(this);
     this._deleteValue = this._deleteValue.bind(this);
-
+    this._showImage = this._showImage.bind(this);
 
   }
 
@@ -183,8 +183,17 @@ export class FirebaseUploadfile extends LitElement {
 
   _deleteValue() {
     this.value = '';
-    this.shadowRoot.querySelector('.bloque1 button').classList.add('invisible');
+    this.shadowRoot.querySelector('#deleteFile').classList.add('invisible');
     this.shadowRoot.querySelector('#fileButton').value = '';
+  }
+
+  _showImage() {
+    const bloque2 = this.shadowRoot.querySelector('.bloque2');
+    if (bloque2.classList.contains('invisible')) {
+      this.shadowRoot.querySelector('.bloque2').classList.remove('invisible');
+    } else {
+      this.shadowRoot.querySelector('.bloque2').classList.add('invisible');
+    }
   }
 
   // Firebase 8: para ver el progreso de la carga de archivos
@@ -202,18 +211,24 @@ export class FirebaseUploadfile extends LitElement {
       () => {
         getDownloadURL(task.snapshot.ref)
           .then((downloadURL) => {          
-          this.value = downloadURL;
-          this.fileIsImage = (file && file.type.split('/')[0] === 'image');
-          this.shadowRoot.querySelector('progress').classList.add('invisible');
-          if (this.deleteBtn) {
-            this.shadowRoot.querySelector('.bloque1 button').classList.remove('invisible');
-            this.shadowRoot.querySelector('.bloque1 button').removeEventListener('click', this._deleteValue);
-            this.shadowRoot.querySelector('.bloque1 button').addEventListener('click', this._deleteValue);
-          }
-          document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: this.value, name: this.name, id: this.id } }));
-        });
-        // this._showMessage(this.uploadOkMsg)
-      }
+            this.value = downloadURL;
+            this.fileIsImage = (file && file.type.split('/')[0] === 'image');
+            this.shadowRoot.querySelector('progress').classList.add('invisible');
+            setTimeout(()=> {
+              if (this.deleteBtn) {
+                this.shadowRoot.querySelector('#deleteFile').classList.remove('invisible');
+                this.shadowRoot.querySelector('#deleteFile').removeEventListener('click', this._deleteValue);
+                this.shadowRoot.querySelector('#deleteFile').addEventListener('click', this._deleteValue);
+              }
+              if (this.shadowRoot.querySelector('#showFile')) {
+                this.shadowRoot.querySelector('#showFile').removeEventListener('click', this._showImage);
+                this.shadowRoot.querySelector('#showFile').addEventListener('click', this._showImage);
+              }
+            }, 0);
+            document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: this.value, name: this.name, id: this.id } }));
+          });
+          // this._showMessage(this.uploadOkMsg)
+        }
     );
   }
 
@@ -253,7 +268,12 @@ export class FirebaseUploadfile extends LitElement {
       this.shadowRoot.querySelector('.bloque1 button').addEventListener('click', this._deleteValue);
     }
 
+    if (this.shadowRoot.querySelector('#showFile')) {
+      this.shadowRoot.querySelector('#showFile').addEventListener('click', this._showImage);
+    }
+
     fileButton.addEventListener('change', this._fileValueChange);
+    
   }
 
   render() {
@@ -268,14 +288,15 @@ export class FirebaseUploadfile extends LitElement {
               <label for="fileButton">Selecciona un fichero
               <input type="file" value="upload" id="fileButton">
               </label>
-              ${(this.deleteBtn) ? (this.value !== '') ? html`<button>Delete</button>`: html`<button class="invisible">Delete</button>` : html``}
+              ${(this.deleteBtn) ? (this.value !== '') ? html`<button id="deleteFile">Delete</button>`: html`<button id="deleteFile" class="invisible">Delete</button>` : html``}
+              ${(this.value !== '') ? html`<button id="showFile">show file</button>` : html``}
             </div>
           </div>
-          <div class="bloque2">
-          ${(this.value !== '') ? html`<a href='${this.value}' target="_blank">${this.value.split('/').pop().split('?')[0].split('-').pop()}</a>` : html``}
-          ${(this.value !== '') ? (this.fileIsImage) ? html`<img id="imageLoaded" src="${this.value}" alt="${name}" width="150">` : html`<div class='fakefile'><div></div></div>` : html``}
-          </div>
         </section>
+        <div class="bloque2 invisible">
+          ${(this.value !== '') ? html`<a href='${this.value}' target="_blank">${this.value.split('/').pop().split('?')[0].split('-').pop()}</a>` : html``}
+          ${(this.value !== '') ? (this.fileIsImage) ? html`<img id="imageLoaded" src="${this.value}" alt="${name || 'image'}" width="150">` : html`<div class='fakefile'><div></div></div>` : html``}
+          </div>
         <div id="filelink"></div>
         <div id="msg"></div>
       ` : html`<div class="waiting">Waiting for loginbutton event...</div>`}
