@@ -13,15 +13,9 @@ export const firebaseUploadfileStyles = css`
     --firebase-uploadfile-bgcolor-button: #106BA0;
     --firebase-uploadfile-color-button: #FFF;
     --firebase-uploadfile-progress-width: 500px
+    --firebase-uploadfile-margin: 10px 0
   */
   :host {
-    display: flex;
-    padding: 0;
-    margin: 30px 0;
-    align-items: start;
-    justify-content: center;
-    flex-direction: column;
-
     --firebase-uploadfile-width-image: 150px;
     --firebase-uploadfile-zoom-image: 1.2;
     --firebase-uploadfile-progress-bg-color: #eee;
@@ -30,7 +24,15 @@ export const firebaseUploadfileStyles = css`
     --firebase-uploadfile-progress-width: 500px;
     --firebase-uploadfile-bgcolor-button: #106BA0;
     --firebase-uploadfile-color-button: #FFF;
-    --firebase-uploadfile-progress-width: 500px
+    --firebase-uploadfile-progress-width: 500px;
+    --firebase-uploadfile-margin: 10px 0;
+
+    display: flex;
+    padding: 0;
+    margin: var(--firebase-uploadfile-margin, 10px 0);
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
   }
 
   #uploader {
