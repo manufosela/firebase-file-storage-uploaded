@@ -59,7 +59,11 @@ export class FirebaseUploadfile extends LitElement {
       loginBtnId: {
         type: String,
         attribute: 'login-btn-id'
-      }
+      },
+      showName: {
+        type: Boolean,
+        attribute: 'show-name'
+      },
     };
   }
 
@@ -77,6 +81,7 @@ export class FirebaseUploadfile extends LitElement {
     this.uploadErrorMsg = 'Upload Error';
     this.uploadOkMsg = 'File Uploaded';
     this.bLog = false;
+    this.showName = true;
     this.loggedUser = '';
     this.dataUser = null;
     this.deleteBtn = false;
@@ -257,7 +262,7 @@ export class FirebaseUploadfile extends LitElement {
       ${this.dataUser !== null ? html`
         <section class="wrapper">
           <div class="bloque1">
-            <label>${name}</label>
+            ${(this.showName) ? /* HTML */`<label>${name}</label>` : ''}
             <progress value="0" max="100" id="uploader" class="invisible">0%</progress>
             <div style="display:flex">
               <label for="fileButton">Selecciona un fichero
