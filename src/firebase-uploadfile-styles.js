@@ -26,6 +26,7 @@ export const firebaseUploadfileStyles = css`
     --firebase-uploadfile-color-button: #fff;
     --firebase-uploadfile-progress-width: 500px;
     --firebase-uploadfile-margin: 10px 0;
+    --firebase-uploadfile-font-size: 10px;
 
     display: flex;
     padding: 0;
@@ -33,6 +34,7 @@ export const firebaseUploadfileStyles = css`
     align-items: start;
     justify-content: center;
     flex-direction: column;
+    font-size: var(--firebase-uploadfile-font-size, 16px);
   }
 
   #uploader {
@@ -52,7 +54,7 @@ export const firebaseUploadfileStyles = css`
     font-weight: bold;
     justify-content: center;
     align-items: center;
-    font-size: 1.2rem;
+    /* font-size: 1rem; */
   }
   label {
     font-weight: bold;
@@ -170,20 +172,23 @@ export const firebaseUploadfileStyles = css`
   }
   label[for='fileButton'],
   button {
-    font-size: 14px;
     font-weight: 600;
     color: var(--firebase-uploadfile-color-button, #fff);
     background-color: var(--firebase-uploadfile-bgcolor-button, #106ba0);
-    display: inline-block;
-    transition: all 0.5s;
+    display: flex;
+    transition: all 0.5s ease 0s;
     cursor: pointer;
     text-transform: uppercase;
     height: 2rem;
-    width: 10rem;
-    text-align: center;
+    min-width: calc(var(--firebase-uploadfile-font-size, 16px) * 10);
     border: 2px outset var(--firebase-uploadfile-bgcolor-button, #106ba0);
     border-radius: 10px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: var(--firebase-uploadfile-font-size, 16px);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-basis: min-content;
   }
   #imageLoaded {
     width: var(--firebase-uploadfile-width-image, 150px);
