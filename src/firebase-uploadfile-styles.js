@@ -34,7 +34,7 @@ export const firebaseUploadfileStyles = css`
     align-items: start;
     justify-content: center;
     flex-direction: column;
-    font-size: var(--firebase-uploadfile-font-size, 16px);
+    font-size: var(--firebase-uploadfile-font-size, 13px);
   }
 
   #uploader {
@@ -77,11 +77,6 @@ export const firebaseUploadfileStyles = css`
     padding: 0.5rem;
   }
   .bloque1 button {
-    margin: 0.3rem;
-    padding: 0.5rem;
-    height: 3rem;
-    width: 10rem;
-    max-width: 10rem;
   }
   .bloque1 .buttonsLayer {
     display: flex;
@@ -179,7 +174,9 @@ export const firebaseUploadfileStyles = css`
     transition: all 0.5s ease 0s;
     cursor: pointer;
     text-transform: uppercase;
-    height: 2rem;
+    height: 2.5rem;
+    max-height: calc(var(--firebase-uploadfile-font-size, 16px) * 4);
+    width: 10rem;
     min-width: calc(var(--firebase-uploadfile-font-size, 16px) * 10);
     border: 2px outset var(--firebase-uploadfile-bgcolor-button, #106ba0);
     border-radius: 10px;
@@ -188,7 +185,18 @@ export const firebaseUploadfileStyles = css`
     align-items: center;
     justify-content: center;
     text-align: center;
-    flex-basis: min-content;
+    flex-basis: content;
+    margin: 0.3rem;
+    padding: 0.5rem;
+    appearance: auto;
+    writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-indent: 0px;
+    text-shadow: none;
+    box-sizing: border-box;
   }
   #imageLoaded {
     width: var(--firebase-uploadfile-width-image, 150px);
