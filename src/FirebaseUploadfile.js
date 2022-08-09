@@ -1,6 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { LitElement, html } from 'lit-element';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from 'firebase/storage';
 import { firebaseUploadfileStyles } from './firebase-uploadfile-styles.js';
 
 /**
@@ -21,48 +26,48 @@ export class FirebaseUploadfile extends LitElement {
   static get properties() {
     return {
       path: {
-        type: String
+        type: String,
       },
       waitingMsg: {
         type: String,
-        attribute: 'waiting-msg'
+        attribute: 'waiting-msg',
       },
       uploadErrorMsg: {
         type: String,
-        attribute: 'upload-errmsg'
+        attribute: 'upload-errmsg',
       },
       uploadOkMsg: {
         type: String,
-        attribute: 'upload-okmsg'
+        attribute: 'upload-okmsg',
       },
-      name: {
-        type: String
+      label: {
+        type: String,
       },
       storageName: {
         type: String,
-        attribute: 'storage-name'
+        attribute: 'storage-name',
       },
       deleteBtn: {
         type: Boolean,
-        attribute: 'delete-btn'
+        attribute: 'delete-btn',
       },
       dataUser: {
-        type: Object
+        type: Object,
       },
       value: {
         type: String,
-        reflect: true
+        reflect: true,
       },
       fileIsImage: {
-        type: Boolean
+        type: Boolean,
       },
       loginBtnId: {
         type: String,
-        attribute: 'login-btn-id'
+        attribute: 'login-btn-id',
       },
-      hideName: {
+      hideLabel: {
         type: Boolean,
-        attribute: 'hide-name'
+        attribute: 'hide-label',
       },
     };
   }
@@ -74,14 +79,14 @@ export class FirebaseUploadfile extends LitElement {
   constructor() {
     super();
     this.path = '/';
-    this.name = 'name';
+    this.label = 'label';
     this.storageName = 'sname';
     this.loginBtnId = null;
     this.waitingMsg = 'Waiting Login...';
     this.uploadErrorMsg = 'Upload Error';
     this.uploadOkMsg = 'File Uploaded';
     this.bLog = false;
-    this.hideName = false;
+    this.hideLabel = false;
     this.loggedUser = '';
     this.dataUser = null;
     this.deleteBtn = false;
@@ -91,32 +96,39 @@ export class FirebaseUploadfile extends LitElement {
     this._fileValueChange = this._fileValueChange.bind(this);
     this._deleteValue = this._deleteValue.bind(this);
     this._showImage = this._showImage.bind(this);
-
   }
 
   connectedCallback() {
     super.connectedCallback();
-    document.addEventListener('firebase-signin', (ev) => {
+    document.addEventListener('firebase-signin', ev => {
       this._userLogged(ev);
     });
-    document.addEventListener('firebase-signout', (ev) => {
+    document.addEventListener('firebase-signout', ev => {
       this._userLogout(ev);
     });
-    const firebaseAreYouLoggedEvent = new CustomEvent('are-it-logged-into-firebase', { detail: { id: this.loginBtnId }});
+    const firebaseAreYouLoggedEvent = new CustomEvent(
+      'are-it-logged-into-firebase',
+      { detail: { id: this.loginBtnId } }
+    );
     document.dispatchEvent(firebaseAreYouLoggedEvent);
-    const firebaseAreYouLoggedEvent2 = new CustomEvent('firebase-are-you-logged', { detail: { id: this.loginBtnId }});
+    const firebaseAreYouLoggedEvent2 = new CustomEvent(
+      'firebase-are-you-logged',
+      { detail: { id: this.loginBtnId } }
+    );
     document.dispatchEvent(firebaseAreYouLoggedEvent2);
 
-    this.id = this.id || `firebase-uploadfile-${  Math.random().toString(36).substring(2, 15)}`;
+    this.id =
+      this.id ||
+      `firebase-uploadfile-${Math.random().toString(36).substring(2, 15)}`;
     // console.log(this.path);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    document.removeEventListener('firebase-signin', (ev) => {
+    document.removeEventListener('firebase-signin', ev => {
       this._userLogged(ev);
     });
-    document.removeEventListener('firebase-signout', (ev) => {
+    document.removeEventListener('firebase-signout', ev => {
       this._userLogout(ev);
     });
   }
@@ -131,7 +143,7 @@ export class FirebaseUploadfile extends LitElement {
         this.main();
       }
       if (propName === 'value') {
-        this.fileIsImage = (this.value.search(/jpg|png|gif|tif|svg/) !== -1);
+        this.fileIsImage = this.value.search(/jpg|png|gif|tif|svg/) !== -1;
       }
     });
   }
@@ -147,7 +159,7 @@ export class FirebaseUploadfile extends LitElement {
       this.user = obj.detail.user.displayName;
       this.dataUser = obj.detail.user;
       this.app = obj.detail.firebaseApp;
-      const slash = ( this.path.substr(-1) !== '/' ) ? '/' :'';
+      const slash = this.path.substr(-1) !== '/' ? '/' : '';
       this.path = `${this.path}${slash}${this.user.replace(/\s+/g, '_')}`;
     }
   }
@@ -162,10 +174,16 @@ export class FirebaseUploadfile extends LitElement {
     const hoy = new Date();
     const hora = `${hoy.getHours()}_${hoy.getMinutes()}_${hoy.getSeconds()}`;
     const fecha = `${hoy.getDate()}_${hoy.getMonth()}_${hoy.getFullYear()}`;
-    const fileNameData = { 'FILENAME': file.name, 'USER': this.user.replace(/\s/g, '_'), 'DATE': fecha, 'HOUR': hora, 'NAME': this.name };
+    const fileNameData = {
+      FILENAME: file.name,
+      USER: this.user.replace(/\s/g, '_'),
+      DATE: fecha,
+      HOUR: hora,
+      NAME: this.name,
+    };
     const nameParts = this.storageName.split(',');
     const fileNameParts = [];
-    nameParts.forEach((part) => {
+    nameParts.forEach(part => {
       const name = fileNameData[part] ? fileNameData[part] : part;
       fileNameParts.push(name);
     });
@@ -173,12 +191,11 @@ export class FirebaseUploadfile extends LitElement {
   }
 
   closeMsg(layer) {
-    setTimeout(
-      () => {
-        layer.style.display = 'none';
-        layer.innerText = '';
-        this.shadowRoot.querySelector('#uploader').value = 0;
-      }, 1500);
+    setTimeout(() => {
+      layer.style.display = 'none';
+      layer.innerText = '';
+      this.shadowRoot.querySelector('#uploader').value = 0;
+    }, 1500);
   }
 
   _deleteValue() {
@@ -199,36 +216,62 @@ export class FirebaseUploadfile extends LitElement {
   // Firebase 8: para ver el progreso de la carga de archivos
   _progressBar(task, file) {
     const uploader = this.shadowRoot.querySelector('#uploader');
-    this.shadowRoot.querySelector('progress').classList.remove('invisible');
-    task.on('state_changed',
-      (snapshot) => {
-        const percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    this.shadowRoot
+      .querySelector('#progressLayer')
+      .classList.remove('invisible');
+    task.on(
+      'state_changed',
+      snapshot => {
+        const percentage =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         uploader.value = percentage;
       },
-      (err) => {
+      err => {
         this._showMessage(err);
+        this.shadowRoot
+          .querySelector('#progressLayer')
+          .classList.add('invisible');
       },
       () => {
-        getDownloadURL(task.snapshot.ref)
-          .then((downloadURL) => {          
-            this.value = downloadURL;
-            this.fileIsImage = (file && file.type.split('/')[0] === 'image');
-            this.shadowRoot.querySelector('progress').classList.add('invisible');
-            setTimeout(()=> {
-              if (this.deleteBtn) {
-                this.shadowRoot.querySelector('#deleteFile').classList.remove('invisible');
-                this.shadowRoot.querySelector('#deleteFile').removeEventListener('click', this._deleteValue);
-                this.shadowRoot.querySelector('#deleteFile').addEventListener('click', this._deleteValue);
-              }
-              if (this.shadowRoot.querySelector('#showFile')) {
-                this.shadowRoot.querySelector('#showFile').removeEventListener('click', this._showImage);
-                this.shadowRoot.querySelector('#showFile').addEventListener('click', this._showImage);
-              }
-            }, 0);
-            document.dispatchEvent(new CustomEvent('firebase-file-storage-uploaded', { 'detail': { downloadURL: this.value, name: this.name, id: this.id } }));
-          });
-          // this._showMessage(this.uploadOkMsg)
-        }
+        getDownloadURL(task.snapshot.ref).then(downloadURL => {
+          this.value = downloadURL;
+          this.fileIsImage = file && file.type.split('/')[0] === 'image';
+          this.shadowRoot
+            .querySelector('#progressLayer')
+            .classList.add('invisible');
+          setTimeout(() => {
+            if (this.deleteBtn) {
+              this.shadowRoot
+                .querySelector('#deleteFile')
+                .classList.remove('invisible');
+              this.shadowRoot
+                .querySelector('#deleteFile')
+                .removeEventListener('click', this._deleteValue);
+              this.shadowRoot
+                .querySelector('#deleteFile')
+                .addEventListener('click', this._deleteValue);
+            }
+            if (this.shadowRoot.querySelector('#showFile')) {
+              this.shadowRoot
+                .querySelector('#showFile')
+                .removeEventListener('click', this._showImage);
+              this.shadowRoot
+                .querySelector('#showFile')
+                .addEventListener('click', this._showImage);
+            }
+          }, 0);
+          document.dispatchEvent(
+            new CustomEvent('firebase-file-storage-uploaded', {
+              detail: {
+                downloadURL: this.value,
+                name: this.label,
+                id: this.id,
+              },
+            })
+          );
+        });
+        // this._showMessage(this.uploadOkMsg)
+      }
     );
   }
 
@@ -247,10 +290,10 @@ export class FirebaseUploadfile extends LitElement {
   async _saveFile(file, fileName) {
     try {
       const storage = await getStorage(this.app);
-      const storageRef = ref(storage, `${this.path  }/${  fileName}`);
-      const uploadTask = uploadBytesResumable(storageRef, file); 
+      const storageRef = ref(storage, `${this.path}/${fileName}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
       this._progressBar(uploadTask, file);
-    } catch(err) {
+    } catch (err) {
       this._showMessage(err);
     }
   }
@@ -261,45 +304,82 @@ export class FirebaseUploadfile extends LitElement {
     await this._saveFile(file, fileName);
   }
 
+  _getButton() {
+    if (this.value !== '') {
+      return html`<button id="deleteFile">Delete</button>`;
+    }
+    return html`<button id="deleteFile" class="invisible">Delete</button>`;
+  }
+
+  _getImage(label) {
+    if (this.fileIsImage) {
+      return html`<img
+        id="imageLoaded"
+        src="${this.value}"
+        alt="${label || 'image'}"
+        width="150"
+      />`;
+    }
+    return html`<div class="fakefile"><div></div></div>`;
+  }
+
   main() {
     const fileButton = this.shadowRoot.querySelector('#fileButton');
 
     if (this.deleteBtn) {
-      this.shadowRoot.querySelector('.bloque1 button').addEventListener('click', this._deleteValue);
+      this.shadowRoot
+        .querySelector('.bloque1 button')
+        .addEventListener('click', this._deleteValue);
     }
 
     if (this.shadowRoot.querySelector('#showFile')) {
-      this.shadowRoot.querySelector('#showFile').addEventListener('click', this._showImage);
+      this.shadowRoot
+        .querySelector('#showFile')
+        .addEventListener('click', this._showImage);
     }
 
     fileButton.addEventListener('change', this._fileValueChange);
-    
   }
 
   render() {
-    const name = this.name.split('/').pop();
+    const label = this.label.split('/').pop();
     return html`
-      ${this.dataUser !== null ? html`
-        <section class="wrapper">
-          <div class="bloque1">
-            ${(this.hideName) ? '' : html`<label>${name}</label>`}
-            <progress value="0" max="100" id="uploader" class="invisible">0%</progress>
-            <div style="display:flex">
-              <label for="fileButton">Selecciona un fichero
-              <input type="file" value="upload" id="fileButton">
-              </label>
-              ${(this.deleteBtn) ? (this.value !== '') ? html`<button id="deleteFile">Delete</button>`: html`<button id="deleteFile" class="invisible">Delete</button>` : html``}
-              ${(this.value !== '') ? html`<button id="showFile">show file</button>` : html``}
+      ${this.dataUser !== null
+        ? html`
+            <section class="wrapper">
+              <div class="bloque1">
+                ${this.hideLabel ? '' : html`<label>${label}</label>`}
+                <div class="progressLayer invisible" id="progressLayer">
+                  <progress value="0" max="100" id="uploader">0%</progress>
+                </div>
+                <div class="buttonsLayer" style="display:flex">
+                  <label for="fileButton">
+                    Selecciona un fichero
+                    <input type="file" value="upload" id="fileButton" />
+                  </label>
+                  ${this.deleteBtn ? this._getButton() : html``}
+                  ${this.value !== ''
+                    ? html`
+                        <button id="showFile">show file</button>
+                        <a class="imgLink" href="${this.value}" target="_blank"
+                          >${this.value
+                            .split('/')
+                            .pop()
+                            .split('?')[0]
+                            .split('-')
+                            .pop()}</a
+                        >
+                      `
+                    : html``}
+                </div>
+              </div>
+            </section>
+            <div class="bloque2 invisible">
+              ${this.value !== '' ? this._getImage(label) : html``}
             </div>
-          </div>
-        </section>
-        <div class="bloque2 invisible">
-          ${(this.value !== '') ? html`<a href='${this.value}' target="_blank">${this.value.split('/').pop().split('?')[0].split('-').pop()}</a>` : html``}
-          ${(this.value !== '') ? (this.fileIsImage) ? html`<img id="imageLoaded" src="${this.value}" alt="${name || 'image'}" width="150">` : html`<div class='fakefile'><div></div></div>` : html``}
-          </div>
-        <div id="filelink"></div>
-        <div id="msg"></div>
-      ` : html`<div class="waiting">Waiting for loginbutton event...</div>`}
+            <div id="msg"></div>
+          `
+        : html`<div class="waiting">Waiting for loginbutton event...</div>`}
     `;
   }
 }

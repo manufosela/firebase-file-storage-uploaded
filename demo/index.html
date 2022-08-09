@@ -31,16 +31,17 @@
         path="/caratulas"
         storage-name="HOUR,DATE,USER,PATH,NAME,FILENAME"
         delete-btn="true"
-        hide-name="true"
+        hide-label="true"
       >
       </firebase-uploadfile>
 
-      <h3>Creando elemento en diferido 5 segundos después...</h3>
+      <h3 id="info">Creando elemento en diferido 5 segundos después...</h3>
       <div id="layer"></div>
       <script>
         function createWc() {
           document.querySelector('#layer').innerHTML =
-            '<firebase-uploadfile id="upload2" login-btn-id="firebase-loginbutton" name="DeferedElement" delete-btn="true" path="/prueba" storage-name="HOUR,DATE,FILENAME"></firebase-uploadfile>';
+            '<firebase-uploadfile id="upload2" login-btn-id="firebase-loginbutton" label="DeferedElement" delete-btn="true" path="/prueba" storage-name="HOUR,DATE,FILENAME"></firebase-uploadfile>';
+          document.getElementById('info').innerHTML += '<br>Elemento creado';
         }
         setTimeout(createWc, 5000);
       </script>
