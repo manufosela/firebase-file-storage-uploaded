@@ -69,6 +69,10 @@ export class FirebaseUploadfile extends LitElement {
         type: Boolean,
         attribute: 'hide-label',
       },
+      hideShowImageButton: {
+        type: Boolean,
+        attribute: 'hide-show-image-button',
+      },
     };
   }
 
@@ -87,6 +91,7 @@ export class FirebaseUploadfile extends LitElement {
     this.uploadOkMsg = 'File Uploaded';
     this.bLog = false;
     this.hideLabel = false;
+    this.hideShowImageButton = false;
     this.loggedUser = '';
     this.dataUser = null;
     this.deleteBtn = false;
@@ -251,7 +256,10 @@ export class FirebaseUploadfile extends LitElement {
                 .querySelector('#deleteFile')
                 .addEventListener('click', this._deleteValue);
             }
-            if (this.shadowRoot.querySelector('#showFile')) {
+            if (
+              this.shadowRoot.querySelector('#showFile') &&
+              !this.hideShowImageButton
+            ) {
               this.shadowRoot
                 .querySelector('#showFile')
                 .removeEventListener('click', this._showImage);
@@ -323,6 +331,17 @@ export class FirebaseUploadfile extends LitElement {
     return html`<div class="fakefile"><div></div></div>`;
   }
 
+  _getShowImageButton() {
+    if (!this.hideShowImageButton) {
+      return html`<button id="showFile">show file</button>`;
+    }
+    return html``;
+  }
+
+  _getImageName() {
+    return this.value.split('/').pop().split('?')[0].split('-').pop();
+  }
+
   main() {
     const fileButton = this.shadowRoot.querySelector('#fileButton');
 
@@ -332,7 +351,10 @@ export class FirebaseUploadfile extends LitElement {
         .addEventListener('click', this._deleteValue);
     }
 
-    if (this.shadowRoot.querySelector('#showFile')) {
+    if (
+      this.shadowRoot.querySelector('#showFile') &&
+      !this.hideShowImageButton
+    ) {
       this.shadowRoot
         .querySelector('#showFile')
         .addEventListener('click', this._showImage);
@@ -360,14 +382,9 @@ export class FirebaseUploadfile extends LitElement {
                   ${this.deleteBtn ? this._getButton() : html``}
                   ${this.value !== ''
                     ? html`
-                        <button id="showFile">show file</button>
+                        ${this._getShowImageButton()}
                         <a class="imgLink" href="${this.value}" target="_blank"
-                          >${this.value
-                            .split('/')
-                            .pop()
-                            .split('?')[0]
-                            .split('-')
-                            .pop()}</a
+                          >${this._getImageName()}</a
                         >
                       `
                     : html``}
