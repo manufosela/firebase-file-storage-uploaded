@@ -58,6 +58,10 @@ export class FirebaseUploadfile extends LitElement {
         type: String,
         reflect: true,
       },
+      supportedFileTypes: {
+        type: String,
+        attribute: 'supported-file-types', // list of supported file types separated by comma
+      },
       fileIsImage: {
         type: Boolean,
       },
@@ -96,6 +100,7 @@ export class FirebaseUploadfile extends LitElement {
     this.dataUser = null;
     this.deleteBtn = false;
     this.value = '';
+    this.supportedFileTypes = '';
     this.fileIsImage = false;
 
     this._fileValueChange = this._fileValueChange.bind(this);
@@ -295,8 +300,24 @@ export class FirebaseUploadfile extends LitElement {
     this.closeMsg(msgLayer);
   }
 
+  _checkSupportedFileTypes(file) {
+    if (this.supportedFileTypes.length > 0) {
+      const fileType = file.type.split('/')[1];
+      console.log(fileType);
+      if (!this.supportedFileTypes.includes(fileType)) {
+        throw new Error(
+          `File type ${fileType} not supported. Supported types are: ${this.supportedFileTypes.join(
+            ', '
+          )}`
+        );
+      }
+    }
+  }
+
   async _saveFile(file, fileName) {
     try {
+      console.log(file);
+      this._checkSupportedFileTypes(file);
       const storage = await getStorage(this.app);
       const storageRef = ref(storage, `${this.path}/${fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, file);

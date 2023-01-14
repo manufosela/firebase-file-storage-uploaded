@@ -45,8 +45,8 @@ export const firebaseUploadfileStyles = css`
   #msg {
     border: 3px outset gray;
     border-radius: 15px;
-    width: 300px;
-    height: 100px;
+    width: 30rem;
+    height: 10rem;
     position: absolute;
     background: gray;
     display: none;
@@ -54,6 +54,7 @@ export const firebaseUploadfileStyles = css`
     font-weight: bold;
     justify-content: center;
     align-items: center;
+    font-size: 1.2rem;
     /* font-size: 1rem; */
   }
   label {
